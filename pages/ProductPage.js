@@ -16,26 +16,57 @@ export class ProductPage {
 	}
 
     productCount = 0
+	productDetails = [];
 
-	async addToCart(productArray) {
-        const productDetails = []
-        for (const product of productArray) {
-            const targetProduct = this.product.filter({ hasText: product });
-            await targetProduct.locator(this.addToCartBtn).click()
-    
-            this.productCount += 1
-            console.log(this.productCount)
-    
-            await expect(this.cartBadge).toHaveText(String(this.productCount))
-    
-            const productPrice = await targetProduct.locator('.inventory_item_price').textContent()
-            console.log(`Added ${product}: ${productPrice}`)
-
-            productDetails.push({name: product, price: productPrice})
-        }
-        console.log(productDetails)
-        return productDetails
+	targetProduct(productName) {
+		return this.page.locator('.inventory_item')
+            .filter({ hasText: productName })
+            .locator('.btn_primary');
 	}
+
+	productPrice(productName) {
+		return this.page.locator('.inventory_item')
+            .filter({ hasText: productName })
+            .locator('.inventory_item_price');
+	}
+
+	async addToCart(productName) {
+		await this.targetProduct(productName).click();
+
+		this.productCount += 1;
+		console.log(this.productCount);
+
+		await expect(this.cartBadge).toHaveText(String(this.productCount));
+
+		// const productPrice = await targetProduct.locator('.inventory_item_price').textContent()
+		const productPrice = await this.productPrice(productName).textContent();
+		console.log(`Added ${productName}: ${productPrice}`);
+
+		this.productDetails.push({ name: productName, price: productPrice });
+		console.log(this.productDetails);
+		return this.productDetails;
+	}
+
+
+	// async addToCart(productArray) {
+    //     const productDetails = []
+    //     for (const product of productArray) {
+    //         const targetProduct = this.product.filter({ hasText: product });
+    //         await targetProduct.locator(this.addToCartBtn).click()
+    
+    //         this.productCount += 1
+    //         console.log(this.productCount)
+    
+    //         await expect(this.cartBadge).toHaveText(String(this.productCount))
+    
+    //         const productPrice = await targetProduct.locator('.inventory_item_price').textContent()
+    //         console.log(`Added ${product}: ${productPrice}`)
+
+    //         productDetails.push({name: product, price: productPrice})
+    //     }
+    //     console.log(productDetails)
+    //     return productDetails
+	// }
 
     async removeFromCart(productName) {
 		const targetProduct = this.product.filter({ hasText: productName });

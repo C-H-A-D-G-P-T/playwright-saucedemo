@@ -17,11 +17,14 @@ test("Place an Order Successfully", async ({ page }) => {
 	await loginPage.goto();
 	await loginPage.login();
 
-	const products = [
-		"Sauce Labs Bike Light", 
-		"Sauce Labs Fleece Jacket"
-	];
-	const productDetails = await productPage.addToCart(products);
+	// const products = [
+	// 	"Sauce Labs Bike Light", 
+	// 	"Sauce Labs Fleece Jacket"
+	// ];
+	// const productDetails = await productPage.addToCart(products);
+
+	await productPage.addToCart('Sauce Labs Bike Light');
+	const productDetails = await productPage.addToCart('Sauce Labs Fleece Jacket');
 
 	await productPage.clickCartBtn();
 
